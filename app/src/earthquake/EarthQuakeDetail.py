@@ -14,7 +14,6 @@ def get_eq():
     result   = get_eq_info(evol_url)
     return result
 
-
 # 結果用の辞書用意
 result = {}
 
