@@ -19,8 +19,7 @@ result = {}
 
 # "震度速報"を取得
 def get_eq_info(url):
-    evol_url = url
-    ev_parsed = parse_url(evol_url)
+    ev_parsed = parse_url(url)
     # for info in eqvol_url.entries:
         # if (info.title == "震度速報"):
         #     result['title'] = info.title
