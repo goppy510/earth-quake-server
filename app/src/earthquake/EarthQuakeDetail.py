@@ -22,8 +22,8 @@ class EarthQuakeDetail:
 
         # テスト用
         url = 'https://www.gpvweather.com/jmaxml-view.php?k=%E9%9C%87%E6%BA%90%E3%83%BB%E9%9C%87%E5%BA%A6%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E6%83%85%E5%A0%B1&p=%E6%B0%97%E8%B1%A1%E5%BA%81&ym=2020-03&f=2020-03-12T17%3A23%3A34-37530bda-c9f6-3a0e-acb1-a2cfe9ef5eb0.xml'
-        parsed    = self.eq_common.parse_url(self.xml_url)
-        parsed    = self.eq_common.parse_url(url)
+        parsed = self.eq_common.parse_url(self.xml_url)
+        parsed = self.eq_common.parse_url(url)
 
         head = parsed[1]
         event_id   = head[3].text
