@@ -4,7 +4,7 @@
 import config
 import slackweb
 import sys, os
-from modules import EarthQuakeDetail
+from earthquake import EarthQuakeDetail
 
 def post():
     slack_url  = config.goppy_slack_url
