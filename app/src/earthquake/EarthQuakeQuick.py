@@ -13,8 +13,8 @@ import urllib.request
 class EarthQuakeQuick:
     def __init__(self):
         self.__target_title = config.detail_title
-        self.__eq_c = EarthQuakeCommon.EarthQuakeCommon(self.__target_title)
-        self.__xml_url = self.__eq_c.get_xml_url()
+        self.__eq_c = EarthQuakeCommon.EarthQuakeCommon()
+        self.__xml_url = self.__eq_c.get_xml_url(self.__target_title)
         self.__pref_row = 2
         self.__area_row = 3
 
