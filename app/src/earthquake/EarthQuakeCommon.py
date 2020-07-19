@@ -11,14 +11,13 @@ import urllib.request
 import dateutil.parser
 
 class EarthQuakeCommon:
-    def __init__(self, target_title):
-        self.__target_title = target_title
+    def __init__(self):
         self.__entries_row = 8
 
 
     # 任意のタイトルに応じたタイトルがあるエントリのxmlリンクを返す
-    def get_xml_url(self):
-        target_title = self.__target_title
+    def get_xml_url(self, target_title):
+        target_title = target_title
         entries = self.__get_entry()
         xml_url = None
         for entry in entries:
