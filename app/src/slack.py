@@ -7,7 +7,7 @@ import sys, os
 from earthquake import EarthQuakeDetail
 from earthquake import EarthQuakeQuick
 
-class Slack():
+class Slacks():
     def __init__(self):
         self.__eq_d = EarthQuakeDetail.EarthQuakeDetail()
         self.__eq_q = EarthQuakeQuick.EarthQuakeQuick()
