@@ -4,7 +4,7 @@
 from datetime import datetime
 from pytz import timezone
 import xml.etree.ElementTree as ET
-import config
+from . import config
 import pprint
 import time
 import urllib.request
@@ -12,21 +12,20 @@ import dateutil.parser
 
 class EarthQuakeCommon:
     def __init__(self, target_title):
-        self.target_title = target_title
+        self.__target_title = target_title
         self.__entries_row = 8
 
 
     # 任意のタイトルに応じたタイトルがあるエントリのxmlリンクを返す
     def get_xml_url(self):
-        target_title = self.target_title
+        target_title = self.__target_title
         entries = self.__get_entry()
-        xml_url = ""
+        xml_url = None
         for entry in entries:
             title = entry[0].text
             if (title == target_title):
                 link = entry[4]
                 xml_url = link.attrib['href']
-                break
         return xml_url
 
 
@@ -51,11 +50,12 @@ class EarthQuakeCommon:
         dt = datetime.strptime(date, '%Y/%m/%d %H:%M:%S')
         return dt
 
+
     # YYYYMMDDhh24msをYYYY/MM/DD hh24:mm:ssに変換する
     def parse_time_str(self, date):
-        date = date[:4] + "/" + date[4:6] + "/" + date[6:8] + " " + date[8:10] + ":" + date[10:12] + ":" + date[12:14]
-        dt = self.parse_time(date)
+        dt = date[:4] + "/" + date[4:6] + "/" + date[6:8] + " " + date[8:10] + ":" + date[10:12] + ":" + date[12:14]
         return dt
+
 
     # 地震火山xmlの取得
     def __read_eqvol(self):
