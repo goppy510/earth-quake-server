@@ -25,6 +25,7 @@ class EarthQuakeCommon:
             if (title == target_title):
                 link = entry[4]
                 xml_url = link.attrib['href']
+                break
         return xml_url
 
 
