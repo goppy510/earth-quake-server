@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from slack import Slack
+from slack import Slacks
 from earthquake import EarthQuakeCommon
 from datetime import datetime
 import xml.etree.ElementTree as ET
@@ -12,7 +12,7 @@ import os
 
 class EarthQuake:
     def __init__(self):
-        self.__slack = Slack()
+        self.__slack = Slacks()
         self.__eq = EarthQuakeCommon.EarthQuakeCommon()
         self.__path = 'timelog/updated_time.txt'
         self.__local_time = None
