@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from . import config
 from . import EarthQuakeCommon
 import datetime
 import xml.etree.ElementTree as ET
@@ -11,8 +10,8 @@ import urllib.request
 
 
 class EarthQuakeQuick:
-    def __init__(self):
-        self.__target_title = config.detail_title
+    def __init__(self, target_title):
+        self.__target_title = target_title
         self.__eq_c = EarthQuakeCommon.EarthQuakeCommon()
         self.__xml_url = self.__eq_c.get_xml_url(self.__target_title)
         self.__pref_row = 2
@@ -23,13 +22,17 @@ class EarthQuakeQuick:
 
         # テスト用
         url = 'http://www.data.jma.go.jp/developer/xml/data/361b530f-d7db-3d79-a4e3-a8191de8c47a.xml'
+        if (self.__xml_url == None):
+            return False
         parsed = self.__eq_c.parse_url(self.__xml_url)
         parsed = self.__eq_c.parse_url(url)
+
+        control = parsed[0]
+        result["title"] = control[0].text
 
         head = parsed[1]
         event_id   = head[3].text
         event_time = self.__eq_c.parse_time_str(str(event_id)) # 発生時刻取得
-        result["title"]      = head[0].text # title取得
         result["event_time"] = event_time
 
         body        = parsed[2]
@@ -51,3 +54,4 @@ class EarthQuakeQuick:
                     "maxint": area_maxint
                 })
         result["area"].sort(key=lambda x: x["maxint"], reverse=True)
+        return result
