@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from . import config
 from . import EarthQuakeCommon
 import datetime
 import xml.etree.ElementTree as ET
@@ -11,8 +10,8 @@ import urllib.request
 
 
 class EarthQuakeDetail:
-    def __init__(self):
-        self.__target_title = config.detail_title
+    def __init__(self, target_title):
+        self.__target_title = target_title
         self.__eq_c = EarthQuakeCommon.EarthQuakeCommon()
         self.__xml_url = self.__eq_c.get_xml_url(self.__target_title)
         self.__pref_row = 2
@@ -23,13 +22,17 @@ class EarthQuakeDetail:
 
         # テスト用
         url = 'https://www.gpvweather.com/jmaxml-view.php?k=%E9%9C%87%E6%BA%90%E3%83%BB%E9%9C%87%E5%BA%A6%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E6%83%85%E5%A0%B1&p=%E6%B0%97%E8%B1%A1%E5%BA%81&ym=2020-03&f=2020-03-12T17%3A23%3A34-37530bda-c9f6-3a0e-acb1-a2cfe9ef5eb0.xml'
+        if (self.__xml_url == None):
+            return False
         parsed = self.__eq_c.parse_url(self.__xml_url)
         # parsed = self.__eq_c.parse_url(url)
+
+        control = parsed[0]
+        result["title"] = control[0].text
 
         head = parsed[1]
         event_id   = head[3].text
         event_time = self.__eq_c.parse_time_str(str(event_id)) # 発生時刻取得
-        result["title"]      = head[0].text # title取得
         result["event_time"] = event_time
 
         body        = parsed[2]
