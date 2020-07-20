@@ -34,20 +34,33 @@ class EarthQuake:
     def execute(self):
         self.__updated_time      = self.__eq.get_update_time()
         self.__latest_detail_xml = self.__eq.get_xml_url(self.__detail_title)
-        if (os.path.exists(self.__time_path)):
-            self.__read_time_log()
-            if (os.path.exists(self.__detail_path)):
-                self.__read_detail_xml()
-            if (os.path.exists(self.__quick_path)):
-                self.__read_quick_xml()
-            if (self.__updated_time > self.__local_time):
-                if (self.__local_detail_xml != self.__latest_detail_xml):
-                    self.__post_detail()
-                if (self.__local_quick_xml != self.__latest_quick_xml):
-                    self.__post_quick()
-        else:
-            self.__post_detail()
-            self.__post_quick()
+        self.__execute_detail()
+        self.__execute_quick()
+
+    def __execute_detail(self):
+        if (self.__eq_d_data):
+            if (os.path.exists(self.__time_path)):
+                self.__read_time_log()
+                if (os.path.exists(self.__detail_path)):
+                    self.__read_detail_xml()
+                if (self.__updated_time > self.__local_time):
+                    if (self.__local_detail_xml != self.__latest_detail_xml):
+                        self.__post_detail()
+            else:
+                self.__post_detail()
+
+    def __execute_quick(self):
+        if (self.__eq_q_data):
+            if (os.path.exists(self.__time_path)):
+                self.__read_time_log()
+                if (os.path.exists(self.__quick_path)):
+                    self.__read_quick_xml()
+                if (self.__updated_time > self.__local_time):
+                    if (self.__local_quick_xml != self.__latest_quick_xml):
+                        self.__post_quick()
+            else:
+                self.__post_quick()
+
 
     # 最後に記録した時間が書かれたファイルを読み込む
     def __read_time_log(self):
