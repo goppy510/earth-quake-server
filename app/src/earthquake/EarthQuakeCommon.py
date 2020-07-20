@@ -17,16 +17,15 @@ class EarthQuakeCommon:
 
     # 任意のタイトルに応じたタイトルがあるエントリのxmlリンクを返す
     def get_xml_url(self, target_title):
-        target_title = target_title
         entries = self.__get_entry()
-        xml_url = None
+        latest = None
         for entry in entries:
             title = entry[0].text
             if (title == target_title):
                 link = entry[4]
-                xml_url = link.attrib['href']
+                latest = link.attrib['href']
                 break
-        return xml_url
+        return latest
 
 
     # eqvolの更新時刻を取得する
@@ -73,7 +72,6 @@ class EarthQuakeCommon:
     # 一覧からentry部分を取得する
     def __get_entry(self):
         eqvol_xml = self.__parse_eqvol()
-        eq_title = config.eqvol_title
         entries_row = self.__entries_row
         entries = []
         for entry in eqvol_xml[entries_row:]:
