@@ -25,7 +25,7 @@ class EarthQuakeQuick:
         if (self.__xml_url == None):
             return False
         parsed = self.__eq_c.parse_url(self.__xml_url)
-        parsed = self.__eq_c.parse_url(url)
+        # parsed = self.__eq_c.parse_url(url)
 
         control = parsed[0]
         result["title"] = control[0].text
