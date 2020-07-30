@@ -28,9 +28,12 @@ class Slacks():
         if (title == self.__quick_title):
             body = self.__create_slack_body_quick(data)
         user_name = self.__create_slack_username(title)
-        icon      = self.__create_slack_icon(maxint)
         slack_conn = slackweb.Slack(url=self.__token)
-        slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
+        if maxint:
+            icon = self.__create_slack_icon(maxint)
+            slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
+        else:
+            slack_conn.notify(text=body, username=user_name)
 
 
     # 最大震度パース
@@ -71,10 +74,14 @@ class Slacks():
         north_pt    = coor_pt[6:11]
         depth       = coor_pt[12:14]
         max_int     = self.__parse_maxint(data["maxint"])
+        if not max_int:
+            max_int = "不明"
+        if not maxint_city:
+            maxint_city = "不明"
         body_event_time = "推定発生時刻： " + data["event_time"] + "\n\n"
         body_maxint     = "最大震度： " + " *" + str(max_int) + "* \n\n"
         body_mag        = "マグニチュード： M" + " *" + str(data["magnitude"]) + "* \n\n"
-        body_hypo       = "震源地： " +  hypo_area + "\n"
+        body_hypo       = "震央地： " +  hypo_area + "\n"
         body_coor       = "経緯度： " + "東経 " + east_pt + " 度・北緯 " + north_pt + " 度 \n"
         body_depth      = "震源の深さ： " + depth + "km\n\n"
         body_area       = "震度"+ str(self.__minint) + "以上の観測地域： \n\n"
@@ -86,6 +93,10 @@ class Slacks():
     def __create_slack_body_quick(self, data):
         maxint_city = self.__create_area_list(data)
         max_int = self.__parse_maxint(data["maxint"])
+        if not max_int:
+            max_int = "不明"
+        if not maxint_city:
+            maxint_city = "不明"
         body_event_time = "推定発生時刻： " + data["event_time"] + "\n\n"
         body_maxint     = "最大震度： " + " *" + str(max_int) + "* \n\n"
         body_area       = "震度"+ str(self.__minint) + "以上の観測地域： \n\n"
