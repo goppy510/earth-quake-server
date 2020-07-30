@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH=/home/goppy/.pyenv/bin:$PATH
+export PATH=/home/$(whoami)/.pyenv/bin:$PATH
 eval "$(pyenv init -)"
 srcPath=/home/$(whoami)/earth-quake-server/app/src/
 mkdir -p ${srcPath}/quick_xml 2>/dev/null
