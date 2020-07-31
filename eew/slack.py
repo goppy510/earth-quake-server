@@ -21,14 +21,14 @@ class Slacks():
         __json_data = json_data
         hypo_type   = str(json_data['request_hypo_type'])
         report_num  = str(json_data['report_num'])
+        intensity   = int(str(json_data['calcintensity'])[:1])
         if ('alertflg' in json_data.keys()):
             alertflg    = str(json_data['alertflg'])
             user_name = self.__title + '(' + alertflg + ')'
             body      = self.__create_body(__json_data)
             icon      = self.__create_icon(__json_data)
             # 緊急地震速報かつ第一報かつ予想震度が2以上ならslackに通知する
-            # if hypo_type == 'eew' and (report_num == '1' or alertflg =='警報'):
-            if hypo_type == 'eew' and report_num == '1':
+            if hypo_type == 'eew' and ((report_num == '1' and intensity >= 2) or alertflg =='警報'):
                 slack_conn = slackweb.Slack(url=self.__token)
                 slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
 
