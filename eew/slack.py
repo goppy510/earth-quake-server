@@ -24,14 +24,15 @@ class Slacks():
 
     def post_slack(self, json_data):
         report_time = str(json_data['report_time'])
-        self.__updated_time = dateutil.parser.parse(report_time)
-        if self.__is_exists_timelog():
-            if self.__is_latest(report_time):
-                self.__send(json_data)
+        if report_time:
+            self.__updated_time = dateutil.parser.parse(report_time)
+            if self.__is_exists_timelog():
+                if self.__is_latest(report_time):
+                    self.__send(json_data)
+                else:
+                    return False
             else:
-                return False
-        else:
-            self.__send(json_data)
+                self.__send(json_data)
 
 
     def __send(self, json_data):
@@ -40,17 +41,15 @@ class Slacks():
         intensity   = str(json_data['calcintensity'])
         report_time = str(json_data['report_time'])
         slack_conn = slackweb.Slack(url=self.__token)
-        if intensity:
-            intensity = int(str(json_data['calcintensity'])[:1])
-        if 'alertflg' in json_data.keys():
-            alertflg    = str(json_data['alertflg'])
-            user_name = self.__title + '(' + report_time + ')'
-            body      = self.__create_body(json_data)
-            icon      = self.__create_icon(json_data)
-            # 緊急地震速報かつ第一報かつ予想震度が2以上ならslackに通知する
-            if hypo_type == 'eew' and ((report_num == '1' and intensity >= 2) or alertflg =='警報'):
-                slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
-                self.__write_time_log(self.__updated_time)
+        intensity = int(str(json_data['calcintensity'])[:1])
+        alertflg    = str(json_data['alertflg'])
+        user_name = self.__title + '(' + report_time + ')'
+        body      = self.__create_body(json_data)
+        icon      = self.__create_icon(json_data)
+        # 緊急地震速報かつ第一報かつ予想震度が2以上ならslackに通知する
+        if hypo_type == 'eew' and ((report_num == '1' and intensity >= 2) or alertflg =='警報'):
+            slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
+            self.__write_time_log(self.__updated_time)
 
 
     def __is_exists_timelog(self):
