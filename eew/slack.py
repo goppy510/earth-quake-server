@@ -25,31 +25,33 @@ class Slacks():
             alertflg    = str(json_data['alertflg'])
             user_name = self.__title + '(' + alertflg + ')'
             body      = self.__create_body(__json_data)
-            icon = self.__create_icon(__json_data)
+            icon      = self.__create_icon(__json_data)
             # 緊急地震速報かつ第一報かつ予想震度が2以上ならslackに通知する
             # if hypo_type == 'eew' and (report_num == '1' or alertflg =='警報'):
             if hypo_type == 'eew' and report_num == '1':
+                slack_conn = slackweb.Slack(url=self.__token)
                 slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
 
 
     def __create_body(self, json_data):
-        origin_time   = self.__parse_time(str(json_data('origin_time')))
-        region_name   = str(json_data('region_name'))
-        depth         = str(json_data.get('depth'))
-        magnitude     = float(json_data.get('magnitude'))
-        latitude      = float(json_data.get('latitude'))
-        longitude     = float(json_data.get('longitude'))
-        calcintensity = str(json_data.get('calcintensity'))
-        is_cancel     = bool(json_data.get('is_cancel'))
+        origin_time   = self.__parse_time(str(json_data['origin_time']))
+        region_name   = str(json_data['region_name'])
+        depth         = str(json_data['depth'])
+        magunitude    = float(json_data['magunitude'])
+        latitude      = float(json_data['latitude'])
+        longitude     = float(json_data['longitude'])
+        calcintensity = str(json_data['calcintensity'])
+        is_cancel     = bool(json_data['is_cancel'])
 
         # 本文のパーツ作成
+        body_mention       = "<!here>" + "\n\n"
         body_origin_time   = "地震発生時刻： " + " *" + origin_time + "* \n\n"
         body_calcintensity = "推定最大震度： " + " *" + calcintensity + "* \n\n"
-        body_magnitude     = "マグニチュード： M" + " *" + magnitude + "* \n\n"
+        body_magunitude    = "マグニチュード： M" + " *" + str(magunitude) + "* \n\n"
         body_region        = "震央地： " +  region_name + "\n"
         body_coor          = "経緯度： " + "東経 " + str(longitude) + " 北緯 " + str(latitude) + "\n"
         body_depth         = "震源の深さ： " + depth + "\n\n"
-        body               = body_origin_time + body_calcintensity + body_magnitude + body_region + body_coor + body_depth
+        body               = body_mention + body_origin_time + body_calcintensity + body_magunitude + body_region + body_coor + body_depth
         return body
 
 
