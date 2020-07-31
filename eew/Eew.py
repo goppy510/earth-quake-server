@@ -20,6 +20,8 @@ class Eew():
         extension = '.json'
         nowtime  = self.__get_current_date()
         endpoint = self.__common_uri + str(nowtime) + extension
+        # テスト用
+        # endpoint = self.__common_uri + str(20200730093733) + extension
         return endpoint
 
 
