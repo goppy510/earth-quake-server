@@ -70,8 +70,8 @@ class Slacks():
         maxint_city = self.__create_area_list(data)
         hypo_area   = data["hypocenter"]["name"]
         coor_pt     = data["hypocenter"]["coordinate"]
-        east_pt     = coor_pt[1:5]
-        north_pt    = coor_pt[6:11]
+        north_pt    = coor_pt[1:5]
+        east_pt     = coor_pt[6:11]
         depth       = coor_pt[12:14]
         max_int     = self.__parse_maxint(data["maxint"])
         if not max_int:
