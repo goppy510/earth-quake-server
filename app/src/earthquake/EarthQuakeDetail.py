@@ -61,15 +61,16 @@ class EarthQuakeDetail:
 
         result["city"] = []
         for ob in observation[2:]:
-            for city in ob[3:]:
-                city_name   = city[0].text
-                city_code   = city[1].text
-                city_maxint = city[2].text
+            for area in ob[3:]:
+                for city in area[3:]:
+                    city_name   = city[0].text
+                    city_code   = city[1].text
+                    city_maxint = city[2].text
 
-                result["city"].append({
-                    "name": city_name,
-                    "code": city_code,
-                    "maxint": city_maxint
-                })
+                    result["city"].append({
+                        "name": city_name,
+                        "code": city_code,
+                        "maxint": city_maxint
+                    })
         result['city'].sort(key=lambda x: x["maxint"], reverse=True)
         return result
