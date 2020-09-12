@@ -62,7 +62,7 @@ class Slacks():
         for name, maxint in zip(city_name, city_maxint):
             if (int(maxint[:1]) >= self.__minint):
                 maxint_city += name + " " + maxint + "\n"
-            return maxint_city
+        return maxint_city
 
 
     # 震源・震度に関する情報のslack本文
