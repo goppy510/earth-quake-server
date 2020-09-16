@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from slack import Slacks
+from line import Lines
 from earthquake import EarthQuakeCommon, EarthQuakeDetail, EarthQuakeQuick
 from datetime import datetime
 import config
@@ -16,6 +17,7 @@ class EarthQuake:
         self.__detail_title      = config.detail_title
         self.__quick_title       = config.quick_title
         self.__slack             = Slacks()
+        self.__line              = Lines()
         self.__eq                = EarthQuakeCommon.EarthQuakeCommon()
         self.__eq_d              = EarthQuakeDetail.EarthQuakeDetail(self.__detail_title)
         self.__eq_q              = EarthQuakeQuick.EarthQuakeQuick(self.__quick_title)
@@ -105,11 +107,13 @@ class EarthQuake:
 
     def __post_detail(self):
         self.__slack.post(self.__eq_d_data)
+        self.__line.post(self.__eq_d_data)
         self.__write_time_log()
         self.__write_detail_xml()
 
     def __post_quick(self):
         self.__slack.post(self.__eq_q_data)
+        self.__line.post(self.__eq_q_data)
         self.__write_time_log()
         self.__write_quick_xml()
 
