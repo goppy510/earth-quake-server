@@ -30,7 +30,7 @@ class EarthQuakeDetail:
         control = parsed[0]
         result["title"] = control[0].text
 
-        head = parsed[1]
+        head       = parsed[1]
         event_id   = head[3].text
         event_time = self.__eq_c.parse_time_str(str(event_id)) # 発生時刻取得
         result["event_time"] = event_time

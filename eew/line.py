@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import config
-import slackweb
 import os
 import json
 import requests
@@ -10,20 +9,20 @@ import datetime
 import dateutil.parser
 
 
-class Slacks():
+class Lines():
     def __init__(self):
-        self.__token        = config.incoming_webhook_url
+        self.__token        = config.line_token
         self.__updated_time = None
         self.__local_time   = None
-        os.chdir('earth-quake-server/eew')
-        self.__time_path    = os.getcwd() + '/updated_time_eew.txt'
+        # os.chdir('earth-quake-server/eew')
+        # self.__time_path    = os.getcwd() + '/updated_time_eew.txt'
+        self.__time_path    = 'updated_time_eew.txt'
         self.__minint = 2
-        # 以下はslack系
         self.__title = "緊急地震速報"
-        self.__icons = ["one", "two", "three", "four", "five", "six", "seven"]
+        self.__headers = {'Authorization': 'Bearer ' + self.__token}
 
 
-    def post_slack(self, json_data):
+    def post(self, json_data):
         report_time = str(json_data['report_time'])
         if report_time:
             self.__updated_time = dateutil.parser.parse(report_time)
@@ -37,20 +36,22 @@ class Slacks():
 
 
     def __send(self, json_data):
+        api_url = self.__get_api_url()
         hypo_type   = str(json_data['request_hypo_type'])
         report_num  = str(json_data['report_num'])
         intensity   = str(json_data['calcintensity'])
         report_time = str(json_data['report_time'])
-        slack_conn = slackweb.Slack(url=self.__token)
-        intensity = int(str(json_data['calcintensity'])[:1])
+        intensity   = int(str(json_data['calcintensity'])[:1])
         alertflg    = str(json_data['alertflg'])
-        user_name = self.__title + '(' + report_time + ')'
-        body      = self.__create_body(json_data)
-        icon      = self.__create_icon(json_data)
+        title   = self.__title + '(' + report_time + ')'
+        body        = self.__create_body(json_data)
+        message = title + "\n\n" + body
+        payload = {
+            'message': message,
+        }
         # 緊急地震速報かつ第一報かつ予想震度が2以上ならslackに通知する
-        if hypo_type == 'eew' and ((report_num == '1' and int(intensity) >= self.__minint) or alertflg =='警報'):
-            slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
-            self.__write_time_log(self.__updated_time)
+        if hypo_type == 'eew' and ((report_num == '1' and intensity >= self.__minint) or alertflg =='警報'):
+            requests.post(api_url, headers=self.__headers, data=payload)
 
 
     def __is_exists_timelog(self):
@@ -78,7 +79,7 @@ class Slacks():
         alertflg      = str(json_data['alertflg'])
 
         # 本文のパーツ作成
-        body_mention       = "<!here>" + "\n\n"
+        body_mention       = "@ALL" + "\n\n"
         body_alertflg      = "種別： " + alertflg + "\n"
         body_origin_time   = "地震発生時刻： " + " *" + origin_time + "* \n\n"
         body_calcintensity = "推定最大震度： " + " *" + calcintensity + "* \n\n"
@@ -94,13 +95,6 @@ class Slacks():
     def __parse_time(self, date):
         dt = date[:4] + "/" + date[4:6] + "/" + date[6:8] + " " + date[8:10] + ":" + date[10:12] + ":" + date[12:14]
         return dt
-
-
-    # slackアイコン
-    def __create_icon(self, json_data):
-        intensity = str(json_data['calcintensity'])
-        icon = ":" + self.__icons[int(intensity[:1])-1] + ":"
-        return icon
 
 
     # 最後に記録した時間が書かれたファイルを読み込む
