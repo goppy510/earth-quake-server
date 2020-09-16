@@ -32,9 +32,6 @@ class Slacks():
         if int(maxint) >= self.__minint:
             icon = self.__create_slack_icon(maxint)
             slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
-        else:
-            slack_conn.notify(text=body, username=user_name)
-
 
     # 最大震度パース
     def __parse_maxint(self, maxint):
