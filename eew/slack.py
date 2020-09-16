@@ -17,6 +17,7 @@ class Slacks():
         self.__local_time   = None
         os.chdir('earth-quake-server/eew')
         self.__time_path    = os.getcwd() + '/updated_time_eew.txt'
+        self.__minint = 2
         # 以下はslack系
         self.__title = "緊急地震速報"
         self.__icons = ["one", "two", "three", "four", "five", "six", "seven"]
@@ -47,7 +48,7 @@ class Slacks():
         body      = self.__create_body(json_data)
         icon      = self.__create_icon(json_data)
         # 緊急地震速報かつ第一報かつ予想震度が2以上ならslackに通知する
-        if hypo_type == 'eew' and ((report_num == '1' and intensity >= 2) or alertflg =='警報'):
+        if hypo_type == 'eew' and ((report_num == '1' and int(intensity) >= self.__minint) or alertflg =='警報'):
             slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
             self.__write_time_log(self.__updated_time)
 
