@@ -15,8 +15,7 @@ class Slacks():
         self.__token        = config.incoming_webhook_url
         self.__updated_time = None
         self.__local_time   = None
-        os.chdir('earth-quake-server/eew')
-        self.__time_path    = os.getcwd() + '/updated_time_eew.txt'
+        self.__time_path    = 'updated_time_eew.txt'
         self.__minint = 2
         # 以下はslack系
         self.__title = "緊急地震速報"
@@ -24,16 +23,7 @@ class Slacks():
 
 
     def post_slack(self, json_data):
-        report_time = str(json_data['report_time'])
-        if report_time:
-            self.__updated_time = dateutil.parser.parse(report_time)
-            if self.__is_exists_timelog():
-                if self.__is_latest(report_time):
-                    self.__send(json_data)
-                else:
-                    return False
-            else:
-                self.__send(json_data)
+        self.__send(json_data)
 
 
     def __send(self, json_data):
@@ -50,20 +40,19 @@ class Slacks():
         # 緊急地震速報かつ第一報かつ予想震度が2以上ならslackに通知する
         if hypo_type == 'eew' and ((report_num == '1' and int(intensity) >= self.__minint) or alertflg =='警報'):
             slack_conn.notify(text=body, username=user_name, icon_emoji=icon)
-            self.__write_time_log(self.__updated_time)
 
 
-    def __is_exists_timelog(self):
-        if os.path.exists(self.__time_path):
-            self.__read_time_log()
-            return True
-        return False
+    # def __is_exists_timelog(self):
+    #     if os.path.exists(self.__time_path):
+    #         self.__read_time_log()
+    #         return True
+    #     return False
 
 
-    def __is_latest(self, report_time):
-        if self.__updated_time > self.__local_time:
-            return True
-        return False
+    # def __is_latest(self, report_time):
+    #     if self.__updated_time > self.__local_time:
+    #         return True
+    #     return False
 
 
     def __create_body(self, json_data):
@@ -103,18 +92,18 @@ class Slacks():
         return icon
 
 
-    # 最後に記録した時間が書かれたファイルを読み込む
-    def __read_time_log(self):
-        with open(self.__time_path, mode='r') as f:
-            self.__local_time = f.read()
-            self.__local_time = dateutil.parser.parse(self.__local_time)
-            f.close()
+    # # 最後に記録した時間が書かれたファイルを読み込む
+    # def __read_time_log(self):
+    #     with open(self.__time_path, mode='r') as f:
+    #         self.__local_time = f.read()
+    #         self.__local_time = dateutil.parser.parse(self.__local_time)
+    #         f.close()
 
 
-    # xmlの時刻が更新されていた場合、その時刻をファイルに書き込む
-    def __write_time_log(self, report_time):
-        with open(self.__time_path, mode='w') as f:
-            updated_time = report_time
-            updated_str  = updated_time.strftime('%Y/%m/%d %H:%M:%S')
-            f.write(updated_str)
-            f.close()
+    # # xmlの時刻が更新されていた場合、その時刻をファイルに書き込む
+    # def __write_time_log(self, report_time):
+    #     with open(self.__time_path, mode='w') as f:
+    #         updated_time = report_time
+    #         updated_str  = updated_time.strftime('%Y/%m/%d %H:%M:%S')
+    #         f.write(updated_str)
+    #         f.close()
