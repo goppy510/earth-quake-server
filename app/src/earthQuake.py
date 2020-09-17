@@ -36,6 +36,7 @@ class EarthQuake:
     def execute(self):
         self.__updated_time      = self.__eq.get_update_time()
         self.__latest_detail_xml = self.__eq.get_xml_url(self.__detail_title)
+        self.__latest_quick_xml  = self.__eq.get_xml_url(self.__quick_title)
         self.__execute_detail()
         self.__execute_quick()
 

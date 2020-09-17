@@ -40,18 +40,19 @@ class EarthQuakeQuick:
         observation = intensity[0]
 
         max_int = observation[1].text
-        result["max_int"] = max_int
+        result["maxint"] = max_int
 
-        result["area"] = []
+        result["city"] = []
         for ob in observation[2:]:
-            for pref in ob[3:]:
-                area_name   = pref[0].text
-                area_code   = pref[1].text
-                area_maxint = pref[2].text
-                result["area"].append({
-                    "name": area_name,
-                    "code": area_code,
-                    "maxint": area_maxint
+            for city in ob[3:]:
+                city_name   = city[0].text
+                city_code   = city[1].text
+                city_maxint = city[2].text
+
+                result["city"].append({
+                    "name": city_name,
+                    "code": city_code,
+                    "maxint": city_maxint
                 })
-        result["area"].sort(key=lambda x: x["maxint"], reverse=True)
+        result["city"].sort(key=lambda x: x["maxint"], reverse=True)
         return result
