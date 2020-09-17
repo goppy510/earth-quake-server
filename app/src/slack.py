@@ -98,7 +98,7 @@ class Slacks():
         body_maxint     = "最大震度： " + " *" + str(max_int) + "* \n\n"
         body_area       = "震度"+ str(self.__minint) + "以上の観測地域： \n\n"
         body_area_name  = maxint_city + "\n"
-        body            = bbody_event_time + body_maxint + body_area + body_area_name
+        body            = body_event_time + body_maxint + body_area + body_area_name
         return body
 
 
