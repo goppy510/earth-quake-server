@@ -23,16 +23,7 @@ class Lines():
 
 
     def post(self, json_data):
-        report_time = str(json_data['report_time'])
-        if report_time:
-            self.__updated_time = dateutil.parser.parse(report_time)
-            if self.__is_exists_timelog():
-                if self.__is_latest(report_time):
-                    self.__send(json_data)
-                else:
-                    return False
-            else:
-                self.__send(json_data)
+        self.__send(json_data)
 
 
     def __send(self, json_data):
@@ -53,18 +44,23 @@ class Lines():
         if hypo_type == 'eew' and ((report_num == '1' and intensity >= self.__minint) or alertflg =='警報'):
             requests.post(api_url, headers=self.__headers, data=payload)
 
-
-    def __is_exists_timelog(self):
-        if os.path.exists(self.__time_path):
-            self.__read_time_log()
-            return True
-        return False
+    #Line APIのURL
+    def __get_api_url(self):
+        API_URL = 'https://notify-api.line.me/api/notify'
+        return API_URL
 
 
-    def __is_latest(self, report_time):
-        if self.__updated_time > self.__local_time:
-            return True
-        return False
+    # def __is_exists_timelog(self):
+    #     if os.path.exists(self.__time_path):
+    #         self.__read_time_log()
+    #         return True
+    #     return False
+
+
+    # def __is_latest(self, report_time):
+    #     if self.__updated_time > self.__local_time:
+    #         return True
+    #     return False
 
 
     def __create_body(self, json_data):
@@ -81,9 +77,9 @@ class Lines():
         # 本文のパーツ作成
         body_mention       = "@ALL" + "\n\n"
         body_alertflg      = "種別： " + alertflg + "\n"
-        body_origin_time   = "地震発生時刻： " + " *" + origin_time + "* \n\n"
-        body_calcintensity = "推定最大震度： " + " *" + calcintensity + "* \n\n"
-        body_magunitude    = "マグニチュード： M" + " *" + str(magunitude) + "* \n\n"
+        body_origin_time   = "地震発生時刻： " + origin_time + "\n\n"
+        body_calcintensity = "推定最大震度： " + calcintensity + "\n\n"
+        body_magunitude    = "マグニチュード： M" + str(magunitude) + "\n\n"
         body_region        = "震央地： " +  region_name + "\n"
         body_coor          = "経緯度： " + "東経 " + str(longitude) + " 北緯 " + str(latitude) + "\n"
         body_depth         = "震源の深さ： " + depth + "\n\n"
@@ -97,18 +93,18 @@ class Lines():
         return dt
 
 
-    # 最後に記録した時間が書かれたファイルを読み込む
-    def __read_time_log(self):
-        with open(self.__time_path, mode='r') as f:
-            self.__local_time = f.read()
-            self.__local_time = dateutil.parser.parse(self.__local_time)
-            f.close()
+    # # 最後に記録した時間が書かれたファイルを読み込む
+    # def __read_time_log(self):
+    #     with open(self.__time_path, mode='r') as f:
+    #         self.__local_time = f.read()
+    #         self.__local_time = dateutil.parser.parse(self.__local_time)
+    #         f.close()
 
 
-    # xmlの時刻が更新されていた場合、その時刻をファイルに書き込む
-    def __write_time_log(self, report_time):
-        with open(self.__time_path, mode='w') as f:
-            updated_time = report_time
-            updated_str  = updated_time.strftime('%Y/%m/%d %H:%M:%S')
-            f.write(updated_str)
-            f.close()
+    # # xmlの時刻が更新されていた場合、その時刻をファイルに書き込む
+    # def __write_time_log(self, report_time):
+    #     with open(self.__time_path, mode='w') as f:
+    #         updated_time = report_time
+    #         updated_str  = updated_time.strftime('%Y/%m/%d %H:%M:%S')
+    #         f.write(updated_str)
+    #         f.close()
